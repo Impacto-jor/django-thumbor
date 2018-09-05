@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+try:
+    from urllib.parse import quote
+except ImportError:
+    from urllib import quote
 
 from libthumbor import CryptoURL
 from django_thumbor import conf
@@ -50,12 +54,14 @@ def _handle_url_field(url):
         return getattr(url, "url", "")
     return url
 
+
 def generate_url(image_url, alias=None, **kwargs):
     image_url = _handle_empty(image_url)
     image_url = _handle_url_field(image_url)
     image_url = _prepend_media_url(image_url)
     image_url = _prepend_static_url(image_url)
     image_url = _remove_schema(image_url)
+    image_url = quote(image_url)
 
     if alias:
         if alias not in conf.THUMBOR_ALIASES:
